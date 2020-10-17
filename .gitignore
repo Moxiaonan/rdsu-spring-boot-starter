@@ -1,0 +1,46 @@
+### Project private config files
+**/application-*.yaml
+!**/src/main/resources/config/application-example.yaml
+**/logback-*.xml
+!**/src/main/resources/config/logback-example.xml
+
+### IntelliJ project files
+.idea/
+*.iml
+out/
+logs
+target
+.history
+
+# Cache of project
+.gradletasknamecache
+
+### Kotlin files
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+### macOS files
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+*.codemao_kit
