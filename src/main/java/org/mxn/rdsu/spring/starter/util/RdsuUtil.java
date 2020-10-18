@@ -6,17 +6,19 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 import java.util.List;
+import java.util.Set;
 
 public class RdsuUtil {
     private RedisTemplate redisTemplate;
 
     public RdsuUtil(RedisTemplate redisTemplate) {
-        redisTemplate.setKeySerializer(RedisSerializer.string());
-//        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setHashValueSerializer(RedisSerializer.string());
-//        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        RedisSerializer<String> keySerializer = RedisSerializer.string();
+//        与 Jackson2JsonRedisSerializer 相比 GenericJackson2JsonRedisSerializer 生成的json中带有@class属性 方便进行泛型转换
+        GenericJackson2JsonRedisSerializer valueSerializer = new GenericJackson2JsonRedisSerializer();
+        redisTemplate.setKeySerializer(keySerializer);
+        redisTemplate.setValueSerializer(valueSerializer);
+        redisTemplate.setHashKeySerializer(keySerializer);
+        redisTemplate.setHashValueSerializer(valueSerializer);
         this.redisTemplate = redisTemplate;
     }
 
@@ -54,5 +56,23 @@ public class RdsuUtil {
 
     public <T> void lPush(String key,T value){
         redisTemplate.opsForList().leftPush(key,value);
+    }
+
+//    type : hash
+    public <T> void hSet(String key,String hashKey,T value){
+        redisTemplate.opsForHash().put(key,hashKey,value);
+    }
+
+    public <T> T hGet(String key,String hashKey,Class<T> clazz){
+        return (T) redisTemplate.opsForHash().get(key,hashKey);
+    }
+
+//    type : set
+    public <T> void sAdd(String key,T... value){
+        redisTemplate.opsForSet().add(key,value);
+    }
+
+    public <T> Set<T> sMembers(String key,Class<T> clazz){
+        return (Set<T>)redisTemplate.opsForSet().members(key);
     }
 }
